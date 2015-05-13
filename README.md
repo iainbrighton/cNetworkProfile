@@ -1,36 +1,58 @@
 Included Resources
 ==================
-* cNetworkProfile
+* cNetworkLocationProfile
+* cNetworkAdapterProfile
 
-cWaitForTcpPort
+cNetworkLocationProfile
 ================
-Waits for the availability of a TCP port on a host to become available before continuing.
+Configures a network location profile to either the Private or Public profile.
 
 ###Syntax
 ```
-cWaitForTcpPort [string]
+cNetworkLocationProfile [string]
 {
-    Hostname = [string]
-    Port = [uint16]
-    [RetryIntervalSec = [uint64]]
-    [RetryCount = [uint32]]
+    Name = [string]
+    Profile = [string] { Private | Public }
 }
 ```
 ###Properties
-* Hostname: IP address, FQDN or NetBIOS name of the host to wait for.
-* Port: TCP port number on the host to wait for.
-* RetryIntervalSec: Number of seconds to wait before retrying the connection. If unspecified, this value defaults to 30 seconds.
-* RetryCount: Number of rety attempts before giving up. If unspecified, this value defaults to 10 retries.
+* Name: The __network location name__ to change. This support wildcard patterns, e.g. 'Network*' or 'Network ?'.
+* Profile: The network location profile to apply. __Domain joined network locations cannot be changed.__
 
 ###Configuration
 ```
-Configuration cWaitForLDAPDomainExample {
-    Import-DscResource -ModuleName cWaitForTcpPort
-    cWaitForTcpPort WaitForMyExampleDomain {
-        Hostname = 'myFQDNdomain.local'
-        Port = 389
-        RetryIntervalSec = 30
-        RetryCount = 10
+Configuration cNetworkLocationProfileExample {
+    Import-DscResource -ModuleName cNetworkProfile
+    cNetworkLocationProfile Network2Private {
+        Name = 'Network 2'
+        Profile = 'Private'
+    }
+}
+```
+
+cNetworkAdapterProfile
+================
+Configures a network location profile to either the Private or Public profile by the network adapter name. __This resource requires Windows 2012 and later.__
+
+###Syntax
+```
+cNetworkAdapterProfile [string]
+{
+    Name = [string]
+    Profile = [string] { Private | Public }
+}
+```
+###Properties
+* Name: The __network adapter name__ to change. This support wildcard patterns, e.g. 'Network*' or 'Network ?'.
+* Profile: The network location profile to apply. __Domain joined network locations cannot be changed.__
+
+###Configuration
+```
+Configuration cNetworkAdapterProfileExample {
+    Import-DscResource -ModuleName cNetworkProfile
+    cNetworkAdapterProfile vEthernetInteralPrivate {
+        Name = 'vEthernet (Internal)'
+        Profile = 'Private'
     }
 }
 ```
